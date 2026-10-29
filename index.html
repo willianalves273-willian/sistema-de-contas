@@ -1,12 +1,25 @@
 <!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Controle de Contas</title>
-<style>body{font:15px Arial;background:#f1f5f9;color:#203040;margin:0}header{background:#08675f;color:white;padding:24px}main{max-width:1100px;margin:auto;padding:16px}.box{background:white;border-radius:12px;padding:18px;margin:14px 0;box-shadow:0 2px 12px #0001}h1{margin:0}h2{margin-top:0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}label{display:block;font-weight:bold;font-size:13px}input,select{width:100%;padding:10px;margin-top:5px;box-sizing:border-box;border:1px solid #bcc9d4;border-radius:7px}button{background:#08786c;color:white;border:0;border-radius:7px;padding:10px;cursor:pointer;margin:3px}button.alt{background:#526779}button.del{background:#b52d42}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}td,th{padding:10px;border-bottom:1px solid #e4e9ef;text-align:left}th{background:#f5f8fa}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.cards div{padding:15px;background:#eaf5f3;border-radius:9px}.cards strong{display:block;font-size:22px;margin-top:8px}.muted{color:#667788;font-size:13px}.rowbtn{display:flex;gap:6px;align-items:end}.progress{height:12px;background:#e4ebef;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:#08786c;width:0}.warn{color:#a33;font-weight:bold}@media print{button,form,.tools{display:none}}.hidden{display:none!important}</style>
+<style>body{font:15px Arial;background:#f1f5f9;color:#203040;margin:0}header{background:#08675f;color:white;padding:24px}main{max-width:1100px;margin:auto;padding:16px}.box{background:white;border-radius:12px;padding:18px;margin:14px 0;box-shadow:0 2px 12px #0001}h1{margin:0}h2{margin-top:0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}label{display:block;font-weight:bold;font-size:13px}input,select{width:100%;padding:10px;margin-top:5px;box-sizing:border-box;border:1px solid #bcc9d4;border-radius:7px}button{background:#08786c;color:white;border:0;border-radius:7px;padding:10px;cursor:pointer;margin:3px}button.alt{background:#526779}button.del{background:#b52d42}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}td,th{padding:10px;border-bottom:1px solid #e4e9ef;text-align:left}th{background:#f5f8fa}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}.cards div{padding:15px;background:#eaf5f3;border-radius:9px}.cards strong{display:block;font-size:22px;margin-top:8px}.muted{color:#667788;font-size:13px}.rowbtn{display:flex;gap:6px;align-items:end}.progress{height:12px;background:#e4ebef;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:#08786c;width:0}.warn{color:#a33;font-weight:bold}@media print{button,form,.tools{display:none}}.hidden{display:none!important}
+.print-btn{background:#075e54;font-weight:700;padding:12px 16px;font-size:15px}
+@media print{
+  body{background:#fff!important;color:#111!important}
+  header{background:#fff!important;color:#111!important;border-bottom:2px solid #075e54;padding:8px 0}
+  main{max-width:none;padding:0}
+  .box{box-shadow:none;border:0;border-radius:0;padding:8px 0;margin:8px 0}
+  table{min-width:0!important;width:100%}
+  th,td{font-size:10pt;padding:6px}
+  .cards div{background:#fff!important;border:1px solid #999}
+  .cards strong{font-size:16pt}
+  @page{size:A4 portrait;margin:12mm}
+}
+</style>
 <header><h1>Controle de Contas e Planos</h1><p>Água, luz, telefone, internet, saúde, funeral, odontológico e outros</p></header><main>
 <div class="box"><div class="cards"><div>Previsto no mês<strong id="prev">R$ 0,00</strong></div><div>Pago<strong id="paid">R$ 0,00</strong></div><div>Em aberto<strong id="open">R$ 0,00</strong></div><div>Vencidas<strong id="late">0</strong></div></div></div>
 <div class="box"><h2>Cadastrar ou editar conta</h2><form id="form"><div class="grid">
 <div><label>Fornecedor / nome *</label><select id="nome" required><option value="">Selecione...</option><option>CEMIG</option><option>SAAE RAUL SOARES</option><option>FIBROM INTERNET</option><option>UNIEPAZ ASSISTÊNCIA</option><option>BB DENTAL</option><option>VIVO TELEFONICA SA</option><option value="__novo">+ Cadastrar novo</option></select><input id="novoNome" class="hidden" placeholder="Nome do novo fornecedor" style="margin-top:7px"></div><label>Categoria<select id="cat"><option>Água</option><option>Energia elétrica</option><option>Telefone</option><option>Internet</option><option>Plano de saúde</option><option>Assistência funeral</option><option>Plano odontológico</option><option>Gás</option><option>Seguro</option><option>Assinatura</option><option>Outros</option></select></label><label>Valor mensal (R$)<input id="valor" type="number" step=".01" min="0" required></label><label>Dia do vencimento<input id="dia" type="number" min="1" max="31" required value="10"></label><label>Primeiro mês<input id="inicio" type="month" required></label><label>Periodicidade<select id="tipo"><option value="mensal">Mensal</option><option value="unica">Única</option></select></label><label>Contrato / matrícula<input id="contrato"></label><label>Quem é responsável?<select id="responsavel"><option value="compartilhada">José e Willian (dividida igualmente)</option><option value="jose">Somente José</option><option value="willian">Somente Willian</option></select></label><label>Observações<input id="obs"></label></div><p><button id="save">Salvar conta</button><button type="button" class="alt" onclick="clearForm()">Limpar</button></p></form></div>
 <div class="box"><h2>Contas por mês</h2><div class="grid tools"><label>Mês de referência<input id="mes" type="month"></label><label>Situação<select id="filtro"><option value="todas">Todas</option><option value="abertas">Em aberto</option><option value="pagas">Pagas</option><option value="vencidas">Vencidas</option></select></label><label>Pesquisar<input id="busca" placeholder="Nome ou categoria"></label></div><div class="scroll"><table><thead><tr><th>Conta</th><th>Vencimento</th><th>Previsto</th><th>Pago</th><th>Situação</th><th>Pagamento</th><th>Ações</th></tr></thead><tbody id="rows"></tbody></table></div></div>
 <div class="box"><h2>Metas para corte de gastos</h2><div class="grid"><label>Limite mensal (R$)<input id="meta" type="number" min="0" step=".01" placeholder="Ex.: 800"></label><div><label>&nbsp;</label><button type="button" onclick="salvarMeta()">Salvar meta</button></div></div><p id="metaTexto" class="muted">Defina um limite mensal para acompanhar os gastos previstos.</p><div class="progress"><span id="metaBarra"></span></div><p class="muted">Revise assinaturas, planos duplicados, tarifas e consumo de água e energia para identificar oportunidades de economia.</p></div><div class="box"><h2>Contas cadastradas</h2><div class="scroll"><table><thead><tr><th>Nome</th><th>Categoria</th><th>Responsável</th><th>Valor</th><th>Dia</th><th>Tipo</th><th>Ações</th></tr></thead><tbody id="registry"></tbody></table></div></div>
-<div class="box"><h2>Backup e relatórios</h2><button onclick="backup()">Baixar backup JSON</button><button class="alt" onclick="document.getElementById('upload').click()">Restaurar backup</button><button class="alt" onclick="csv()">Exportar mês CSV</button><button class="alt" onclick="print()">Imprimir</button><input type="file" id="upload" accept=".json" hidden><p class="muted">Dados salvos apenas neste navegador, sem Firebase. Faça backups periódicos em outro dispositivo. Restaurar substitui os dados atuais.</p></div></main>
+<div class="box"><h2>Backup e relatórios</h2><button onclick="backup()">Baixar backup JSON</button><button class="alt" onclick="document.getElementById('upload').click()">Restaurar backup</button><button class="alt" onclick="csv()">Exportar mês CSV</button><button class="print-btn" onclick="print()" title="Imprimir a visão mensal atual">🖨️ Imprimir relatório mensal</button><input type="file" id="upload" accept=".json" hidden><p class="muted">Dados salvos apenas neste navegador, sem Firebase. Faça backups periódicos em outro dispositivo. Restaurar substitui os dados atuais.</p></div></main>
 <script>
 const $=id=>document.getElementById(id),KEY='contas_servicos_local_v1',now=new Date(),ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');$('mes').value=ym;$('inicio').value=ym;let db={contas:[],pagamentos:{}},edit=null;
 try{let x=JSON.parse(localStorage.getItem(KEY));if(x&&Array.isArray(x.contas)&&x.pagamentos)db=x}catch(e){alert('Erro ao ler dados locais. Preserve seu backup.')}
@@ -30,7 +43,85 @@ function backup(){dl('backup_contas_'+today()+'.json',JSON.stringify({app:'conta
 $('upload').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.contas)||!x.pagamentos||!x.contas.every(c=>c.id&&c.nome&&c.inicio))throw Error('Arquivo incompatível');if(confirm('Substituir todos os dados atuais pelo backup?')){let old=db;db={contas:x.contas,pagamentos:x.pagamentos};if(!save())db=old;render()}}catch(err){alert('Erro: '+err.message)}e.target.value=''}
 function salvarMeta(){let v=Number($('meta').value);if(!Number.isFinite(v)||v<=0)return alert('Informe uma meta mensal maior que zero.');localStorage.setItem(KEY+'_meta',String(v));render();}
 function atualizarMeta(total){let v=Number(localStorage.getItem(KEY+'_meta')||0);$('meta').value=v||'';if(!v){$('metaTexto').textContent='Defina um limite mensal para acompanhar os gastos previstos.';$('metaBarra').style.width='0%';return;}let pct=total/v*100;$('metaTexto').textContent=`Previsto: ${money(total)} de ${money(v)} (${pct.toFixed(0)}%). ${pct>100?'Meta ultrapassada!':pct>=80?'Atenção: perto do limite.':'Dentro da meta.'}`;$('metaTexto').className=pct>100?'warn':'muted';$('metaBarra').style.width=Math.min(100,pct)+'%';}
-function imprimirConta(id){let x=items().find(x=>x.c.id===id);if(!x)return alert('Conta não encontrada neste mês.');let incluirPix=confirm('Incluir no documento a indicação de acerto via PIX e o valor correspondente?');let c=x.c,o=c.responsavel||'compartilhada',amount=x.p.pago?(x.p.valorPago??x.v):x.v,share=o==='compartilhada'?amount/2:amount,recipient=o==='jose'?'José':o==='willian'?'Willian':'José e Willian',msg=o==='compartilhada'?'DESPESA DIVIDIDA IGUALMENTE ENTRE JOSE E WILLIAN':o==='jose'?'DESPESA DE RESPONSABILIDADE SOMENTE DE JOSE':'DESPESA DE RESPONSABILIDADE SOMENTE DE WILLIAN';let w=window.open('','_blank','width=800,height=800');if(!w)return alert('Permita pop-ups para imprimir a conta.');w.document.write(`<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Conta</title><style>body{font:16px Arial;padding:32px;color:#182a38}h1{font-size:24px}.box{border:1px solid #aaa;border-radius:8px;padding:18px;margin:16px 0}.big{font-size:22px;font-weight:bold}.muted{color:#555}@media print{button{display:none}}</style><h1>CONTROLE DE CONTAS E ACERTO PIX</h1><p>Competência: ${$('mes').value}</p><div class="box"><h2>${safe(c.nome)}</h2><p>Categoria: ${safe(c.cat)}</p><p>Vencimento: <b>${x.due.split('-').reverse().join('/')}</b></p><p>Valor da despesa: <span class="big">${money(amount)}</span></p><p><b>${msg}</b></p><p>Responsável: ${recipient}</p>${incluirPix?`<p><b>ACERTO VIA PIX</b></p><p>VALOR DO ACERTO PIX: <span class="big">${money(share)}</span></p><p class="muted">${o==='compartilhada'?'Cada pessoa responde por 50% do valor.':'O valor integral é atribuído a '+recipient+'.'}</p>`:``}<p>Contrato/matrícula: ${safe(c.contrato||'Não informado')}</p><p>Observações: ${safe(c.obs||'—')}</p><p>Situação: ${x.p.pago?'Pago em '+safe(x.p.data||'data não informada'):'Em aberto'}</p></div><p class="muted">Documento de controle pessoal. Guarde junto ao comprovante da conta e do PIX.</p><button onclick="window.print()">Imprimir</button><script>setTimeout(()=>window.print(),350)<\/script></html>`);w.document.close();}
+function imprimirConta(id){
+ let x=items().find(x=>x.c.id===id);
+ if(!x)return alert('Conta não encontrada neste mês.');
+ let incluirPix=confirm('Incluir no comprovante o quadro de acerto via PIX?');
+ let c=x.c,o=c.responsavel||'compartilhada';
+ let amount=x.p.pago?(x.p.valorPago??x.v):x.v;
+ let share=o==='compartilhada'?amount/2:amount;
+ let recipient=o==='jose'?'José':o==='willian'?'Willian':'José e Willian';
+ let msg=o==='compartilhada'
+   ?'Despesa dividida igualmente entre José e Willian'
+   :o==='jose'?'Despesa de responsabilidade exclusiva de José'
+   :'Despesa de responsabilidade exclusiva de Willian';
+ let w=window.open('','_blank','width=850,height=900');
+ if(!w)return alert('Permita pop-ups para imprimir a conta.');
+ const competencia=new Date($('mes').value+'-01T00:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+ const situacao=x.p.pago?'PAGA':'EM ABERTO';
+ const pixHtml=incluirPix?`
+   <section class="pix">
+     <div class="pix-label">ACERTO VIA PIX</div>
+     <div class="pix-desc">${o==='compartilhada'?'Valor correspondente à metade da despesa (50% para cada responsável).':'Valor integral atribuído a '+safe(recipient)+'.'}</div>
+     <div class="pix-total">${money(share)}</div>
+     <div class="pix-foot">Valor de referência para o acerto entre os responsáveis.</div>
+   </section>`:'';
+ w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Comprovante individual — ${safe(c.nome)}</title>
+ <style>
+ *{box-sizing:border-box}
+ body{font-family:Arial,sans-serif;color:#17212b;margin:0;padding:24px;font-size:14px}
+ .top{border-bottom:3px solid #08786c;padding-bottom:14px;margin-bottom:18px}
+ .brand{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#08786c;font-weight:bold}
+ h1{font-size:23px;margin:7px 0 5px}
+ .subtitle{color:#526170;font-size:13px}
+ .competencia{display:inline-block;background:#edf7f5;border:1px solid #b7dcd6;border-radius:5px;padding:7px 10px;margin-top:12px;font-weight:bold;text-transform:capitalize}
+ .panel{border:1px solid #cbd5dc;border-radius:8px;padding:16px;margin:14px 0}
+ h2{font-size:17px;margin:0 0 12px}
+ .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ .field{border-bottom:1px solid #e4e9ed;padding:7px 0;min-height:42px}
+ .label{display:block;color:#5b6873;font-size:11px;text-transform:uppercase;margin-bottom:5px}
+ .value{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+ .amount{font-size:25px;font-weight:800;color:#075e54}
+ .status{display:inline-block;border:1px solid ${x.p.pago?'#15803d':'#b45309'};color:${x.p.pago?'#166534':'#92400e'};background:${x.p.pago?'#f0fdf4':'#fffbeb'};border-radius:5px;padding:6px 10px;font-weight:bold}
+ .pix{margin-top:20px;border:3px solid #08786c;border-radius:10px;padding:18px;text-align:center;background:#f0fdfa;page-break-inside:avoid}
+ .pix-label{font-size:16px;font-weight:900;letter-spacing:1px;color:#064e3b}
+ .pix-desc{font-size:12px;color:#334155;margin:9px 0}
+ .pix-total{font-size:30px;font-weight:900;color:#064e3b;border-top:1px solid #99d5c8;border-bottom:1px solid #99d5c8;padding:12px 4px;margin:10px 0}
+ .pix-foot{font-size:11px;color:#475569}
+ .footer{margin-top:20px;padding-top:10px;border-top:1px solid #cbd5dc;color:#64748b;font-size:10px;line-height:1.5}
+ .actions{margin:18px 0;text-align:center}
+ button{background:#08786c;color:white;border:0;border-radius:6px;padding:11px 18px;font-weight:bold;cursor:pointer}
+ @media(max-width:560px){body{padding:14px}.grid{grid-template-columns:1fr}.amount{font-size:22px}}
+ @media print{body{padding:0;font-size:11pt}.actions{display:none!important}.panel{break-inside:avoid}.pix{background:#f0fdfa!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.status{ -webkit-print-color-adjust:exact;print-color-adjust:exact}}
+ @page{size:A4 portrait;margin:12mm}
+ </style></head><body>
+ <header class="top">
+   <div class="brand">Controle de Contas e Planos</div>
+   <h1>Comprovante individual da conta</h1>
+   <div class="subtitle">Documento de controle pessoal — mantenha junto à fatura e ao comprovante de pagamento.</div>
+   <div class="competencia">Competência: ${safe(competencia)}</div>
+ </header>
+ <section class="panel">
+   <h2>${safe(c.nome)}</h2>
+   <div class="grid">
+     <div class="field"><span class="label">Categoria</span><span class="value">${safe(c.cat)}</span></div>
+     <div class="field"><span class="label">Vencimento</span><span class="value">${x.due.split('-').reverse().join('/')}</span></div>
+     <div class="field"><span class="label">Valor considerado</span><span class="amount">${money(amount)}</span></div>
+     <div class="field"><span class="label">Situação</span><span class="status">${situacao}</span></div>
+     <div class="field"><span class="label">Responsabilidade</span><span class="value">${safe(recipient)}</span></div>
+     <div class="field"><span class="label">Data do pagamento</span><span class="value">${x.p.pago?safe(x.p.data||'Não informada'):'Ainda não pago'}</span></div>
+     <div class="field"><span class="label">Contrato / matrícula</span><span class="value">${safe(c.contrato||'Não informado')}</span></div>
+     <div class="field"><span class="label">Forma de divisão</span><span class="value">${safe(msg)}</span></div>
+     <div class="field" style="grid-column:1/-1"><span class="label">Observações</span><span class="value">${safe(c.obs||'Nenhuma')}</span></div>
+   </div>
+ </section>
+ ${pixHtml}
+ <div class="footer">Emitido em ${new Date().toLocaleString('pt-BR')}. Este documento é um resumo para controle pessoal e não substitui a fatura do fornecedor nem o comprovante bancário do PIX.</div>
+ <div class="actions"><button onclick="window.print()">🖨️ Imprimir comprovante</button></div>
+ <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),300));<\/script>
+ </body></html>`);
+ w.document.close();
+}
 function csv(){let rows=[['Conta','Categoria','Vencimento','Previsto','Pago','Data','Status'],...items().map(x=>[x.c.nome,x.c.cat,x.due,x.v,x.p.pago?(x.p.valorPago??x.v):'',x.p.data||'',x.p.pago?'Pago':x.late?'Vencida':'Aberta'])];dl('contas_'+$('mes').value+'.csv','\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n'),'text/csv;charset=utf-8')}
 for(let id of ['mes','filtro','busca'])$(id).addEventListener('input',render);render();
 </script></html>
